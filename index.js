@@ -19,13 +19,15 @@ const arthalapServer = express();
 
 // load cors
 arthalapServer.use(cors());
-
+arthalapServer.use(express.json());
+arthalapServer.use(express.json());
+arthalapServer.use(express.urlencoded({ extended: true }));
 // define routes
 arthalapServer.get("/", (req, res) => {
   res.json("hurray its working");
 });
 arthalapServer.get("/posts", blogs);
-arthalapServer.get("/addPost", addPost);
+arthalapServer.post("/addpost", addPost);
 
 // start server at port
 arthalapServer.listen(port, () => {

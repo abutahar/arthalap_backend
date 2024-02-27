@@ -1,6 +1,8 @@
 const express = require("express");
 const mongodb = require("mongodb");
 const dotenv = require("dotenv");
+const bodyparser = require("body-parser");
+
 dotenv.config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = `mongodb+srv://${process.env.MONGODB_UNAME}:${process.env.MONDODB_UPASS}@cluster0.ovriozy.mongodb.net/?retryWrites=true&w=majority`;
@@ -33,16 +35,35 @@ async function run() {
 // run().catch(console.dir);
 
 // handler functions
-const addPost = async function (req, res) {
-  await arthalaDatabase.connect();
-  db1.insertOne({ name: "taher" });
-  res.json("blog posted");
+const addPost = async (req, res, next) => {
+  const data = req.body;
+  if (req.method === "POST" && data) {
+    try {
+      const options = { ordered: true };
+      if (data.title && data.post) {
+        await arthalaDatabase.connect();
+        const r = await db1.insertOne(data, options);
+
+        if (r) {
+          res.status(200).send({ message: "post inserted", r });
+          console.log(data);
+          arthalaDatabase.close();
+        } else {
+          res.status(400).send({ message: "there is a problem " });
+        }
+      }
+
+      next();
+    } catch (err) {
+      res.status(200).send({ message: "it crashed" });
+      next();
+    }
+  }
 };
 const blogs = async function (req, res) {
   // console.log(data);
   await arthalaDatabase.connect();
-  const data = await db2.find().toArray();
+  const data = await db1.find().toArray();
   res.send(data);
 };
-
 module.exports = { addPost, blogs };
