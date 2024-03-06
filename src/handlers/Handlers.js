@@ -16,6 +16,7 @@ const arthalaDatabase = new MongoClient(uri, {
   },
 });
 
+const db0 = arthalaDatabase.db("arthalapdb").collection("home");
 const db1 = arthalaDatabase.db("arthalapdb").collection("blogs");
 const db2 = arthalaDatabase.db("usersDB").collection("users");
 async function run() {
@@ -46,7 +47,7 @@ const addPost = async (req, res, next) => {
 
         if (r) {
           res.status(200).send({ message: "post inserted", r });
-          console.log(data);
+
           arthalaDatabase.close();
         } else {
           res.status(400).send({ message: "there is a problem " });
@@ -66,4 +67,9 @@ const blogs = async function (req, res) {
   const data = await db1.find().toArray();
   res.send(data);
 };
-module.exports = { addPost, blogs };
+const homePage = async function (req, res) {
+  await arthalaDatabase.connect();
+  const d = await db0.find.toArray();
+  res.status(200).send([]);
+};
+module.exports = { addPost, blogs, homePage };

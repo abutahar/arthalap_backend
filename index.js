@@ -12,7 +12,7 @@ dotenv.config();
 const port = process.env.PORT || 5000;
 
 // files include
-const { addPost, blogs } = require("./src/handlers/Handlers.js");
+const { addPost, blogs, homePage } = require("./src/handlers/Handlers.js");
 
 // server run
 const arthalapServer = express();
@@ -26,7 +26,12 @@ arthalapServer.use(express.urlencoded({ extended: true }));
 arthalapServer.get("/", (req, res) => {
   res.json("hurray its working");
 });
+
+// get requests
 arthalapServer.get("/posts", blogs);
+arthalapServer.get("/home", homePage);
+
+// post requests
 arthalapServer.post("/addpost", addPost);
 
 // start server at port
